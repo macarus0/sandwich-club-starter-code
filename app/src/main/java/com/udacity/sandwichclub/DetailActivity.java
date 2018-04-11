@@ -3,24 +3,39 @@ package com.udacity.sandwichclub;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
 
+import java.util.ArrayList;
+
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
 
+    ImageView mIngredientsIv;
+    TextView mDescriptionTv;
+    TextView mOriginTv;
+    TextView mAlsoKnownAsTv;
+    TextView mIngredientsTv;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        mIngredientsIv = findViewById(R.id.image_iv);
+        mDescriptionTv = findViewById(R.id.description_tv);
+        mOriginTv = findViewById(R.id.origin_tv);
+        mAlsoKnownAsTv = findViewById(R.id.also_known_tv);
+        mIngredientsTv = findViewById(R.id.ingredients_tv);
 
-        ImageView ingredientsIv = findViewById(R.id.image_iv);
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -42,13 +57,9 @@ public class DetailActivity extends AppCompatActivity {
             closeOnError();
             return;
         }
+        populateUI(sandwich);
 
-        populateUI();
-        Picasso.with(this)
-                .load(sandwich.getImage())
-                .into(ingredientsIv);
 
-        setTitle(sandwich.getMainName());
     }
 
     private void closeOnError() {
@@ -56,7 +67,45 @@ public class DetailActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.detail_error_message, Toast.LENGTH_SHORT).show();
     }
 
-    private void populateUI() {
+    private void populateUI(Sandwich sandwich) {
+        mDescriptionTv.setText(sandwich.getDescription());
 
+        String placeOfOrigin = sandwich.getPlaceOfOrigin();
+        Log.d("DetailActivity", String.format("Sandwich %s has origin '%s'",
+                sandwich.getMainName(), sandwich.getPlaceOfOrigin()));
+        if (placeOfOrigin.isEmpty()) {
+            placeOfOrigin = "Unknown";
+        }
+        mOriginTv.setText(placeOfOrigin);
+
+        ArrayList<String> ingredients = (ArrayList<String>) sandwich.getIngredients();
+        mIngredientsTv.setText(joinList(ingredients));
+
+        ArrayList<String> alsoKnownAs = (ArrayList<String>) sandwich.getAlsoKnownAs();
+        // If the sandwich has no aliases, use <none>
+        if (alsoKnownAs.size() == 0) {
+            mAlsoKnownAsTv.setText("<none>");
+        } else {
+            mAlsoKnownAsTv.setText(joinList(alsoKnownAs));
+        }
+
+        setTitle(sandwich.getMainName());
+
+        Picasso.with(this)
+                .load(sandwich.getImage())
+                .into(mIngredientsIv);
     }
+
+    private String joinList(ArrayList<String> list) {
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        for (; i < list.size() - 1; i++) {
+            sb.append(list.get(i));
+            sb.append(", ");
+        }
+        sb.append(list.get(i));
+        return sb.toString();
+    }
+
+
 }
