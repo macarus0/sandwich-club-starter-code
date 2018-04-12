@@ -69,13 +69,14 @@ public class JsonUtils {
             Log.e(TAG, String.format("No name specified in: '%s'", JSONSandwich));
             return null;
         }
-        sandwich.setMainName(retrieveRequiredString(name, "mainName"));
-        sandwich.setAlsoKnownAs(retrieveOptionalList(name, "alsoKnownAs"));
-        sandwich.setPlaceOfOrigin(retrieveRequiredString(JSONSandwich, "placeOfOrigin"));
-        sandwich.setDescription(retrieveRequiredString(JSONSandwich, "description"));
-        sandwich.setImage(retrieveRequiredString(JSONSandwich, "image"));
-        sandwich.setIngredients(retrieveOptionalList(JSONSandwich, "ingredients"));
+        return new Sandwich(
+                retrieveRequiredString(name, "mainName"),
+                retrieveOptionalList(name, "alsoKnownAs"),
+                retrieveRequiredString(JSONSandwich, "placeOfOrigin"),
+                retrieveRequiredString(JSONSandwich, "description"),
+                retrieveRequiredString(JSONSandwich, "image"),
+                retrieveOptionalList(JSONSandwich, "ingredients"));
 
-        return sandwich;
+
     }
 }

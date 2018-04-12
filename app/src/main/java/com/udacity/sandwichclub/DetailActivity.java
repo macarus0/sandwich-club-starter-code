@@ -14,28 +14,26 @@ import com.udacity.sandwichclub.utils.JsonUtils;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
 
-    ImageView mIngredientsIv;
-    TextView mDescriptionTv;
-    TextView mOriginTv;
-    TextView mAlsoKnownAsTv;
-    TextView mIngredientsTv;
+    @BindView(R.id.image_iv) ImageView mIngredientsIv;
+    @BindView(R.id.description_tv) TextView mDescriptionTv;
+    @BindView(R.id.origin_tv) TextView mOriginTv;
+    @BindView(R.id.also_known_tv) TextView mAlsoKnownAsTv;
+    @BindView(R.id.ingredients_tv) TextView mIngredientsTv;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        mIngredientsIv = findViewById(R.id.image_iv);
-        mDescriptionTv = findViewById(R.id.description_tv);
-        mOriginTv = findViewById(R.id.origin_tv);
-        mAlsoKnownAsTv = findViewById(R.id.also_known_tv);
-        mIngredientsTv = findViewById(R.id.ingredients_tv);
-
+        ButterKnife.bind(this);
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -84,7 +82,7 @@ public class DetailActivity extends AppCompatActivity {
         ArrayList<String> alsoKnownAs = (ArrayList<String>) sandwich.getAlsoKnownAs();
         // If the sandwich has no aliases, use <none>
         if (alsoKnownAs.size() == 0) {
-            mAlsoKnownAsTv.setText("<none>");
+            mAlsoKnownAsTv.setText("None");
         } else {
             mAlsoKnownAsTv.setText(joinList(alsoKnownAs));
         }
